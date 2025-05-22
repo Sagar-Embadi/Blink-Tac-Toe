@@ -27,10 +27,6 @@ body, html {
   cursor: pointer;
 }
 
-.header, .help {
-  text-align: center;
-  margin-bottom: 20px;
-}
 
 .board {
   display: grid;
