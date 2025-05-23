@@ -1,58 +1,76 @@
-import { themes } from "@/App";
-import { emojiCategories } from "@/assets/emojis";
-import Board from "@/components/Board";
-import Header from "@/components/Header";
-import { useState } from "react";
+// import Board from '@/components/Board';
+// import useMultiplayerGame from '../hooks/useMultiplayerGame';
+
+// export function Multiplayer() {
+//   const { board, handleMove, winner, currentPlayer, player1Category, player2Category } = useMultiplayerGame();
+
+//   return (
+//     <>
+//       <div className="flex flex-col items-center justify-center h-screen">
+//         <Board board={board} onCellClick={handleMove} />
+//         <div className="mt-6">
+//           {winner ? (
+//             <h2 className="text-2xl text-green-600 font-bold">{winner}</h2>
+//           ) : (
+//             <p className="text-lg">
+//               <span className={currentPlayer === 1 ? "text-blue-500 font-bold" : ""}>Player 1</span> ({player1Category}) vs
+//               <span className={currentPlayer === 2 ? "text-red-500 font-bold ml-1" : "ml-1"}>Player 2</span> ({player2Category})
+//             </p>
+//           )}
+//         </div>
+//       </div>
+//     </>
+//   )
+// }
+
+import React, { useState } from 'react';
+import PlayerSetupModal from '../components/PlayerSetupModal';
+import MultiplayerBoard from '../components/Board';
+import useMultiplayerGame from '../hooks/useMultiplayerGame';
+import WinnerModal from '@/components/WinnerModal';
 
 export function Multiplayer() {
-    const [player1Category, setPlayer1Category] = useState("Animals");
-      const [player2Category, setPlayer2Category] = useState("Food");
-      const [winner, setWinner] = useState(null);
-    
-      const resetGame = () => {
-        setWinner(null);
-      };
+  const [players, setPlayers] = useState(null);
+  const {
+    board,
+    handleMove,
+    winner,
+    currentPlayer,
+    resetGame,
+    // player1Category,
+    // player2Category,
+  } = useMultiplayerGame(players);
+
+  if (!players) {
+    return <PlayerSetupModal onStart={setPlayers} />;
+  }
+
   return (
-    <div className={`app ${themes} w-full`}>
-      <Header
-        player1Category={player1Category}
-        player2Category={player2Category}
-        currentPlayer={winner ? "-" : 1}
-      />
-      {!winner ? (
-        <>
-          <div className="category-select">
-            <label>Player 1 Category:</label>
-            <select
-              value={player1Category}
-              onChange={(e) => setPlayer1Category(e.target.value)}
-            >
-              {Object.keys(emojiCategories).map((cat) => (
-                <option key={cat}>{cat}</option>
-              ))}
-            </select>
-            <label>Player 2 Category:</label>
-            <select
-              value={player2Category}
-              onChange={(e) => setPlayer2Category(e.target.value)}
-            >
-              {Object.keys(emojiCategories).map((cat) => (
-                <option key={cat}>{cat}</option>
-              ))}
-            </select>
-          </div>
-          <Board
-            player1Category={player1Category}
-            player2Category={player2Category}
-            onGameEnd={(msg) => setWinner(msg)}
-          />
-        </>
-      ) : (
-        <div className="winner">
-          <h2>{winner}</h2>
-          <button onClick={resetGame}>Play Again</button>
+    <>
+      <div className="flex flex-col items-center mt-8 h-screen">
+        <MultiplayerBoard board={board} onCellClick={handleMove} />
+        <div className="mt-6">
+          {winner ? (
+            <WinnerModal
+              winnerName={currentPlayer === 1 ? players.player1?.name : players.player2?.name}
+              onPlayAgain={() => {
+                setPlayers(null);
+                resetGame();
+              }}
+            />
+          ) : (
+            <p className="text-lg">
+              <span className={currentPlayer === 1 ? 'text-blue-500 font-bold' : ''}>
+                {players.player1?.name}
+              </span>{' '}
+              vs{' '}
+              <span className={currentPlayer === 2 ? 'text-red-500 font-bold' : ''}>
+                {players.player2?.name}
+              </span>
+            </p>
+          )}
         </div>
-      )}
-    </div>
+      </div>
+    </>
   );
 }

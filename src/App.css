@@ -39,7 +39,7 @@ body, html {
 .cell {
   height: 80px;
   width: 80px;
-  font-size: 2rem;
+  font-size: 3rem;
   text-align: center;
   line-height: 80px;
   cursor: pointer;

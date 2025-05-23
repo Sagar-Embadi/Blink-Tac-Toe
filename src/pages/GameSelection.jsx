@@ -9,7 +9,7 @@ export function GameSelection() {
       <h1 className="text-3xl font-bold dark:text-white">Choose Game Mode</h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full max-w-4xl">
         <div
-          onClick={() => navigate('single')}
+          onClick={() => navigate('computer')}
           className="cursor-pointer bg-gradient-to-r from-purple-500 to-indigo-600 text-white rounded-2xl p-6 shadow-lg hover:scale-105 transform transition duration-300"
         >
           <div className="flex items-center gap-4">
