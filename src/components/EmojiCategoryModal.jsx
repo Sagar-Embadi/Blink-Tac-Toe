@@ -17,7 +17,7 @@ export default function EmojiCategoryModal({ onSelect }) {
               onClick={() => handleSelect(cat)}
               className="p-3 rounded-lg bg-blue-500 hover:bg-blue-600 text-white"
             >
-              {cat} <br/> {emojiCategories[cat].join(' ')}
+              {cat} <br/> {emojiCategories[cat].slice(0,5).join(' ')}
             </button>
           ))}
         </div>
