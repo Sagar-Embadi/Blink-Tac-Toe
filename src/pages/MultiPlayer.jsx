@@ -1,76 +1,165 @@
-// import Board from '@/components/Board';
-// import useMultiplayerGame from '../hooks/useMultiplayerGame';
+// import React, { useState } from "react";
+// import PlayerSetupModal from "../components/PlayerSetupModal";
+// import Board from "../components/Board";
+// import useMultiplayerGame from "@/hooks/useMultiplayerGame";
+// import PlayerHeader from "../components/PlayerHeader";
+// import { GameStatsMultiplayer } from "@/components/GameStatsMultiplayer";
+// import WinnerModal from "@/components/WinnerModal";
 
 // export function Multiplayer() {
-//   const { board, handleMove, winner, currentPlayer, player1Category, player2Category } = useMultiplayerGame();
+//   const [players, setPlayers] = useState(null);
+
+//   const {
+//     board,
+//     handleMove,
+//     currentTurn,
+//     resetGame,
+//     player1,
+//     player2,
+//     setPlayer1,
+//     setPlayer2,
+//     emojis,
+//     player1Moves,
+//     player2Moves,
+//     winningCells,
+//     winner,
+//     player1WinStreak,
+//     player2WinStreak,
+//   } = useMultiplayerGame();
 
 //   return (
 //     <>
-//       <div className="flex flex-col items-center justify-center h-screen">
-//         <Board board={board} onCellClick={handleMove} />
-//         <div className="mt-6">
-//           {winner ? (
-//             <h2 className="text-2xl text-green-600 font-bold">{winner}</h2>
-//           ) : (
-//             <p className="text-lg">
-//               <span className={currentPlayer === 1 ? "text-blue-500 font-bold" : ""}>Player 1</span> ({player1Category}) vs
-//               <span className={currentPlayer === 2 ? "text-red-500 font-bold ml-1" : "ml-1"}>Player 2</span> ({player2Category})
-//             </p>
-//           )}
+//       {!players && <PlayerSetupModal 
+//         onStart={setPlayers}
+//         player1={player1}
+//         player2={player2}
+//         setPlayer1={setPlayer1}
+//         setPlayer2={setPlayer2}
+//       />}
+//       {players && (
+//         <div className="flex flex-col md:flex-row items-center justify-center gap-4 py-6 px-4 mt-10 pt-18 min-h-screen">
+//           <div>
+//             <Board
+//               board={board}
+//               onCellClick={handleMove}
+//               winningCells={winningCells}
+//             />
+//             <PlayerHeader
+//               currentTurn={currentTurn}
+//               playerCategory={player1?.category}
+//               computerCategory={player2?.category}
+//               playerMoves={player1Moves}
+//               computerMoves={player2Moves}
+//               playerName={player1?.name}
+//               computerName={player2?.name}
+//             />
+//           </div>
+//           <div className="mt-6">
+//             <GameStatsMultiplayer
+//               emojis={emojis}
+//               player1={player1}
+//               player2={player2}
+//               player1Streak={player1WinStreak}
+//               player2Streak={player2WinStreak}
+//             />
+//           </div>
 //         </div>
-//       </div>
+//       )}
+//       {winner && (
+//         <WinnerModal
+//           winnerName={winner}
+//           onPlayAgain={resetGame}
+//         />
+//       )}
 //     </>
-//   )
+//   );
 // }
 
-import React, { useState } from 'react';
-import PlayerSetupModal from '../components/PlayerSetupModal';
-import MultiplayerBoard from '../components/Board';
-import useMultiplayerGame from '../hooks/useMultiplayerGame';
-import WinnerModal from '@/components/WinnerModal';
+
+import React, { useEffect, useState } from "react";
+import PlayerSetupModal from "../components/PlayerSetupModal";
+import Board from "../components/Board";
+import useMultiplayerGame from "@/hooks/useMultiplayerGame";
+import PlayerHeader from "../components/PlayerHeader";
+import { GameStatsMultiplayer } from "@/components/GameStatsMultiplayer";
+import WinnerModal from "@/components/WinnerModal";
 
 export function Multiplayer() {
   const [players, setPlayers] = useState(null);
+
   const {
     board,
     handleMove,
-    winner,
-    currentPlayer,
+    currentTurn,
     resetGame,
-    // player1Category,
-    // player2Category,
-  } = useMultiplayerGame(players);
+    player1,
+    player2,
+    setPlayer1,
+    setPlayer2,
+    initializePlayers,
+    emojis,
+    player1Moves,
+    player2Moves,
+    winningCells,
+    winner,
+    player1WinStreak,
+    player2WinStreak,
+  } = useMultiplayerGame();
 
-  if (!players) {
-    return <PlayerSetupModal onStart={setPlayers} />;
-  }
+  useEffect(() => {
+    if (players && players.player1 && players.player2) {
+      initializePlayers(players.player1, players.player2);
+    }
+  }, [players]);
 
   return (
     <>
-      <div className="flex flex-col items-center mt-8 h-screen">
-        <MultiplayerBoard board={board} onCellClick={handleMove} />
-        <div className="mt-6">
-          {winner ? (
-            <WinnerModal
-              winnerName={currentPlayer === 1 ? players.player1?.name : players.player2?.name}
-              onPlayAgain={() => {
-                setPlayers(null);
-                resetGame();
-              }}
+      {!players && (
+        <PlayerSetupModal
+          onStart={(players) => setPlayers(players)}
+          player1={player1}
+          player2={player2}
+          setPlayer1={setPlayer1}
+          setPlayer2={setPlayer2}
+        />
+      )}
+
+      {players && (
+        <div className="flex flex-col md:flex-row items-center justify-center gap-4 py-6 px-4 mt-10 pt-18 min-h-screen">
+          <div>
+            <Board
+              board={board}
+              onCellClick={handleMove}
+              winningCells={winningCells}
             />
-          ) : (
-            <p className="text-lg">
-              <span className={currentPlayer === 1 ? 'text-blue-500 font-bold' : ''}>
-                {players.player1?.name}
-              </span>{' '}
-              vs{' '}
-              <span className={currentPlayer === 2 ? 'text-red-500 font-bold' : ''}>
-                {players.player2?.name}
-              </span>
-            </p>
-          )}
+            <PlayerHeader
+              currentTurn={currentTurn}
+              playerCategory={player1?.category}
+              computerCategory={player2?.category}
+              playerMoves={player1Moves}
+              computerMoves={player2Moves}
+              playerName={player1?.name}
+              computerName={player2?.name}
+            />
+          </div>
+          <div className="mt-6">
+            <GameStatsMultiplayer
+              emojis={emojis}
+              player1={player1}
+              player2={player2}
+              player1Streak={player1WinStreak}
+              player2Streak={player2WinStreak}
+            />
+          </div>
         </div>
-      </div>
+      )}
+
+      {winner && (
+        <WinnerModal
+          winnerName={winner}
+          onPlayAgain={resetGame}
+        />
+      )}
     </>
   );
 }
