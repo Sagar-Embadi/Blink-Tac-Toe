@@ -3,7 +3,7 @@ import React from 'react';
 
 export function GameSelection() {
   return (
-    <div className="flex flex-col items-center justify-center h-screen gap-10 px-4">
+    <div className="flex flex-col items-center h-screen gap-10 px-4 mt-[80px] md:justify-center md:mt-0">
       <h1 className="text-3xl font-bold dark:text-white">Choose Game Mode</h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full max-w-4xl">
         <SinglePlayerCard/>
